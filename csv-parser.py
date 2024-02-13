@@ -4,6 +4,13 @@ import csv
 import os
 import glob
 
+def parse_csv(file_path):
+    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        # Assuming each row has exactly two columns: key and value
+        data = {rows[0]: rows[1] for rows in reader if len(rows) == 2}
+    return data
+
 def main():
     # define paths for input and output directories
     # also output.csv
@@ -16,25 +23,25 @@ def main():
         parsed_data = parse_csv(file_name)
         all_data.append(parsed_data)
 
-    # combine all data into a single csv file (output.csv)
+    # merge all data into a single CSV
     if all_data:
-        # grab all unique headers defined in horizontal rows on
-        # row 1
-        headers = sorted(set().union(*all_data))  
+        # get all unique headers
+        headers = sorted(set().union(*all_data))
 
         # check for output.csv and see if it's empty (to avoid writing header again)
         file_exists = os.path.isfile(output_path) and os.path.getsize(output_path) > 0
 
-        # open file in append mode so it doesn't overwrite w/ each file
+        # append data to output.csv
         with open(output_path, mode='a', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=headers)
             
-            # write headers if the file doesn't exist
+            # only write headers if the file doesn't exist 
             if not file_exists:
                 writer.writeheader()
-            # write rows 
+            
+            # iterator for writing each row of data
             for data in all_data:
                 writer.writerow(data)
-# execute main()
+
 if __name__ == "__main__":
     main()
