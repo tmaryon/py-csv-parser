@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+import csv
+import os
+import glob
+
 def main():
     # define paths for input and output directories
     # also output.csv
